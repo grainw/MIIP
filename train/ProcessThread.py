@@ -81,36 +81,3 @@ def writeStopWords(words,allWords,theta):
         file = open('stopwords_theta'+str(i), 'a')
         file.writelines(["%s\n" % ' '.join(item) for item in a])
         file.close()
-
-
-# X = [['aa','bb'],['中国馆','这个公司']]
-# writeAllWords(' '.join(np.array(X[1])))
-
-
-# def print_time(threadName, delay, counter):
-#     while counter:
-#         if exitFlag:
-#             threadName.exit()
-#         time.sleep(delay)
-#         print "%s: %s" % (threadName, time.ctime(time.time()))
-#         counter -= 1
-
-
-
-
-
-# # 创建新线程
-# thread1 = LdaThread(1, "Thread-1", 1)
-# thread2 = LdaThread(2, "Thread-2", 2)
-
-# 开启线程
-# thread1.start()
-# thread2.start()
-
-# print "Exiting Main Thread"
-#
-# print  time.asctime( time.localtime(time.time()) )
-#
-# print time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-# for i in range(10):
-#     print i
