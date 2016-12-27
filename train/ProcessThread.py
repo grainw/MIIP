@@ -61,6 +61,7 @@ def generateWords(threadID,data_sample,data_label, n_features, stop_words_list, 
         log.info("文件写入权重词")
         writeWords(dictWords,theta)
 
+
 def writeWords(words,theta):
      for i in theta:
         file = open('wordset'+str(i), 'a')
