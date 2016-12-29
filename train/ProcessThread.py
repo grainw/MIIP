@@ -34,12 +34,12 @@ def generateWords(threadID,data_sample,data_label, n_features, stop_words_list, 
         allDocWords = []
         allDocWords.append(data_label[i] + "#")
         log.info("第"+str(threadID)+"批次第"+str(i)+"偏文章做lda...........")
-        allWords = list(set(getAllWords([data], stop_words_list)))
+        allWords = getAllWords([data], stop_words_list)
         log.info("文件写入所有词")
         allDocWords.extend(allWords)
         writeAllWords(allDocWords)
         # lda主题词提取
-        X = getWordsTFMat([data], allWords, stop_words_list)
+        X = getWordsTFMat([data],list(set(allWords)) , stop_words_list)
         model = lda.LDA(1, n_iter=1000, random_state=1)
         model.fit(np.array(X))
         dictWords = {}

@@ -10,9 +10,9 @@ stop_words_list = loadStopWords('stopwords1.txt')
 n_features = 2000
 #n_topics = 14440
 dxy, label_dxy = getDataSamples('dxy.json')
-net, label_39net = getDataSamples('39net2.cvs')
-data_samples = dxy + net
-data_label = label_dxy+label_39net
+# net, label_39net = getDataSamples('39net2.cvs')
+data_samples = dxy #+ net
+data_label = label_dxy#+label_39net
 
 step = 500
 theta = [0.5,0.6,0.7]
@@ -31,5 +31,5 @@ for j in range(num):
         log.info( '数据分割为:data_sample['+str(start)+':'+str(end)+']')
         thread = LdaThread(j,"ThreadName"+str(j),data_samples[start:end],data_label[start:end], stop_words_list, theta)
         thread.start()
-        time.sleep(600)
+        time.sleep(60)
 

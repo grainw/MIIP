@@ -16,14 +16,25 @@ def trainModel(data_samples, n_top_words, stop_words_list, n_features, n_topics,
     model.fit(np.array(X))
     printTopWords(model,list(wordset), n_top_words)
     if save:
-        save_path =  'samples-' + str(n_samples) + '-' + time.strftime("%Y-%m-%d-%H:%M:%S", time.localtime())
+        save_path =  os.getcwd()+'samples-' + str(n_samples) + '-' + time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())
         os.mkdir(save_path)
-        # topic_word = open(save_path + '/train_model', 'wr')
-        # doc_topic = open(save_paht + '/train_model', 'wr')
-        # np.save(topic_word, np.array(model.topic_word_))
-        # np.save(doc_topic, np.array(model.doc_topic_))
         saveModel = open(save_path + '/train_model', 'w')
         pickle.dump(model, saveModel)
         saveWordSet = open(save_path + '/word_set', 'w')
         pickle.dump(wordset, saveWordSet)
     return model, wordset
+
+
+# if __name__ == '__main__':
+#     print "-----------------"
+#     save_path = os.getcwd()+'samples-' + str(1) + '-' + time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())
+#     os.mkdir(save_path)
+#     # topic_word = open(save_path + '/train_model', 'wr')aaaa
+#     # doc_topic = open(save_paht + '/train_model', 'wr')
+#     # np.save(topic_word, np.array(model.topic_word_))
+#     # np.save(doc_topic, np.array(model.doc_topic_))
+#     saveModel = open(save_path + '/train_model', 'w')
+#     model = "asfsafsfaf"
+#     pickle.dump(model, saveModel)
+#     saveWordSet = open(save_path + '/word_set', 'w')
+#     pickle.dump("afsafsf", saveWordSet)
