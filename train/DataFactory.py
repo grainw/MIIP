@@ -12,78 +12,46 @@ class DataFactoryImpl:
     instance=None
     def __init__(self,path,type=None):
         self.path = path
-        self.type = type if type is not None else FileType.PANDAS_TYPE
-        rs = self.input_1()
-        self.rs = rs
-
-    def input_1(self):
-        RS = {
-            FileType.DEFALUT_TYPE: DefaultFileUtils(self.path),
-            FileType.JSON_TYPE: JsonFileUtils(self.path),
-            FileType.NUMPY_TYPE: NpFileUtils(self.path),
-            FileType.PANDAS_TYPE: PdFileUtils(self.path)
-         }
-
-        return RS[self.type]
+        self.type = type if type is not None else FileType.PANDAS_JSON
+        self.dataFrame = PdFileUtils(self.path,self.type).doRead()
 
     def output_1(self):
-         self.rs.doRead()
+         pass
+
+    #归一化处理，去掉标点符号和英文，把所有数字转换为'NUM'
+    def normalize(text):
+        text = re.compile(ur'[^0-9\u4e00-\u9fa5]').sub('', text)
+        return text
 
 
 
-class DataElement:
-    def __init__(self,content,label,url):
-        self.content = content
-        self.label = label
-        self.url = url
 
 class FileUtils:
     __metaclass__ = ABCMeta
-    def __init__(self,path):
+    def __init__(self,path,type = None):
         self.path = path
+        self.type = type
     @abstractmethod
     def doRead(self):
         '''
         ???
         :return:
         '''
-    #归一化处理，去掉标点符号和英文，把所有数字转换为'NUM'
-    def normalize(text):
-        text = re.compile(ur'[^0-9\u4e00-\u9fa5]').sub('', text)
-        return text
-
-class JsonFileUtils(FileUtils):
-
-    def doRead(self):
-        print 'json'+str(self.path)
-
-class DefaultFileUtils(FileUtils):
-
-    def doRead(self):
-        # list = []
-        # for line in open(self.path, 'r'):
-        #     word = line.strip().decode('utf-8')
-        #     super.normalize(word)
-        #     de = DataElement()
-        #     de.content = ' '.join(super.normalize(word))
-        #     list.append(de)
-        print 'defulat'+str(self.path)
-        # return list
-
-class NpFileUtils(FileUtils):
-
-    def doRead(self):
-        # 路径，浮点型数据，逗号分隔，第4列使用函数iris_type单独处理
-        # data = np.loadtxt(self.path, dtype=float, delimiter=',', converters={4: iris_type})
-        print 'np'+str(self.path)
-    # def iris_type(s):
-    #     it = {'Iris-setosa': 0, 'Iris-versicolor': 1, 'Iris-virginica': 2}
-    #     return it[s]
 
 class PdFileUtils(FileUtils):
-
     def doRead(self):
         print 'pd'+str(self.path)
+        if self.type ==FileType.PANDAS_JSON:
+            self.doReadJson()
+        elif self.type ==FileType.PANDAS_CVS:
+            self.doReadCvs()
+
+    def doReadJson(self):
+        print 'json'
+
+    def doReadCvs(self):
+        print 'cvs'
+
 
 class MyException(Exception):
     def __init__(self, type):
@@ -91,14 +59,19 @@ class MyException(Exception):
         self.type = type
 
 class FileType:
-    DEFALUT_TYPE = 0
-    JSON_TYPE = 1
-    NUMPY_TYPE = 2
-    PANDAS_TYPE = 3
+    PANDAS_JSON = 0
+    PANDAS_CVS = 1
 if __name__ == '__main__':
-    df = DataFactoryImpl('d://aa')
+    df = DataFactoryImpl('d://aa',FileType.PANDAS_CVS)
     DF = df.output_1()
-    df = pd.read_json("dxy2.json")
-    print df["_id"]
+    # df = pd.read_json("dxy2.json")
+    # # print df.index
+    # # print df.columns
+    # # print df[df.columns[1:2]]
+    # print df.iloc[3:5,0:2]
+    #
+    # print df.iloc[3:5]
+
+
 
 
