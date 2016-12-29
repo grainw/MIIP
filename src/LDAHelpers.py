@@ -1,7 +1,6 @@
 #! /usr/bin/python
 #coding=utf-8
 import pickle
-from functions import *
 from LoggerFacotory import *
 import glob
 import sys
@@ -22,7 +21,7 @@ class LDAHelpers:
         self.stop_words = stop_words
 
 
-    def getTFMat():
+    def getTFMat(self):
         '''
         Return a mat whcih contains TF to per-document.
         '''

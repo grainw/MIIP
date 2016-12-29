@@ -8,8 +8,8 @@ import re
 
 
 class FileType:
-    PANDAS_JSON = 0
-    PANDAS_CVS = 1
+    JSON = 0
+    CVS = 1
     TEXT = 2
 
 class FileUtils:
@@ -21,24 +21,24 @@ class FileUtils:
         self.type = fileType
         self.names = names
     def doRead(self):
-        if self.fileType ==FileType.PANDAS_JSON:
+        if self.type == FileType.JSON:
             return self.doReadJson()
-        elif self.fileType ==FileType.PANDAS_CVS:
+        elif self.type == FileType.CVS:
             return self.doReadCvs()
-        elif self.fileType == TEXT:
+        elif self.type == FileType.TEXT:
             return self.doReadText()
 
     #Read json files
     def doReadJson(self):
-        return pd.read_json(self.path, names=names)
+        return pd.read_json(self.path)
 
     #Read csv files
     def doReadCsv(self):
-        return pd.read_cvs(self.path, names=names)
+        return pd.read_cvs(self.path, names=self.names)
 
     #Read text files
     def doReadText(self):
-        return pd.read_table(self.path, names=names)
+        return pd.read_table(self.path, names=self.names)
 
 
 class MyException(Exception):
