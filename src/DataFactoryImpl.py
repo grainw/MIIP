@@ -35,5 +35,6 @@ class DataFactoryImpl:
         for i in range(self.n_samples):
             seg_list = pseg.cut(self.data["content"][i])
             words = [normalize(word) for word, flag in seg_list if normalize(word) != '' and normalize(word) not in self.stop_words and flag == 'n']
-            element.append((self.data["zhuti"][i], words, self.data['url'][i]))
-        return pd.DataFrame(element, columns=['zhuti', 'content', 'url'])
+            words = ["%s\n" % ' '.join(word) for word in words]
+            element.append((self.data["zhuti"][i], self.data['url'][i], words))
+        return pd.DataFrame(element, columns=['zhuti', 'url', 'content'])

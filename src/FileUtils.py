@@ -40,6 +40,8 @@ class FileUtils:
     def doReadText(self):
         return pd.read_table(self.path, names=self.names)
 
+    #def write(self):
+    #    self.data.to_json(self.path)
 
 class MyException(Exception):
     def __init__(self, type):

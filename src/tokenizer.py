@@ -14,3 +14,5 @@ data = FileUtils('../train/dxy1.json', FileType.JSON).doRead()
 stop_words = FileUtils('../train/stopwords1.txt', FileType.TEXT, ["words"]).doRead()
 df = DataFactoryImpl(data, '../train/user.dict', stop_words)
 all_words = df.getAllWords()
+#write to file
+all_words.to_csv('testAllWords.csv', encoding='utf-8')
