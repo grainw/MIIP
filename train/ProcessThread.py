@@ -1,15 +1,18 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
 
-
 from functions import *
-from LoggerFacotory import *
 import numpy as np
 import threading
 import time
+import sys
+import os
+sys.path.append(os.path)
+from CommonUtils import *
+
 
 exitFlag = 0
-log = Logger('test.log',logging.INFO,logging.INFO)
+# log = src.LoggerFacotory.Logger('test.log', logging.INFO, logging.INFO)
 class LdaThread (threading.Thread):   #继承父类threading.Thread
     def __init__(self, threadID, name, data_sample,data_label,stop_words_list,theta):
         threading.Thread.__init__(self)
