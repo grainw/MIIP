@@ -13,9 +13,10 @@ jieba.enable_parallel()
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-f', "--sourcefile", help="data file", type=str)
-parser.add_argument('-s', '--stopwords', help='stop words list', type=str)
-parser.add_argument('-u', '--userdict', help='specified user dict', type=str)
+parser.add_argument('-d', "--data",      help="data file",            type=str)
+parser.add_argument('-s', '--stopwords', help='stop words list',      type=str)
+parser.add_argument('-u', '--userdict',  help='specified user dict',  type=str)
+parser.add_argument('-f', '--filename',  help='file name for output', type=str)
 args = parser.parse_args()
 
 data = FileUtils(args.sourcefile, FileType.JSON).doRead()
@@ -51,5 +52,5 @@ for i in range(len(data.index)):
             dict_word[j].append(item)
 
 for key in dict_word:
-    pd.DataFrame(dict_word[key], columns=['_id', 'content', 'from', 'url', 'zhuti']).to_csv('testWords' + str(int(key*100)) + '.csv', encoding='utf-8')
-pd.concat([i for i in all_words]).to_csv('testAllWords.csv', encoding='utf-8')
+    pd.DataFrame(dict_word[key], columns=['_id', 'content', 'from', 'url', 'zhuti']).to_csv(args.filename + str(int(key*100)) + '.csv', encoding='utf-8')
+pd.concat([i for i in all_words]).to_csv(args.filename + '.csv', encoding='utf-8')
