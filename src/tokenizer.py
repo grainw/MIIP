@@ -50,4 +50,4 @@ for i in range(len(data.index)):
 
 for key in dict_word:
     pd.DataFrame(dict_word[key], columns=['_id', 'content', 'from', 'url', 'zhuti']).to_csv('testWords' + str(key*100) + '.csv', encoding='utf-8')
-pd.concat([i for i in all_words]).to_csv('testAllWords.cvs', encoding='utf-8')
+pd.concat([i for i in all_words]).to_csv('testAllWords.csv', encoding='utf-8')
