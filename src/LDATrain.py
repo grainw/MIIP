@@ -14,8 +14,7 @@ jieba.enable_parallel()
 def printTopWords(model, allWords, n_top_words):
     for topicIdx, topic in enumerate(model.topic_word_):
         print("Topic #%d:" % topicIdx)
-        print(" ".join([allWords[i]
-                        for i in topic.argsort()[:-n_top_words - 1:-1]]))
+        print(" ".join([allWords[i] for i in topic.argsort()[:-n_top_words - 1:-1]]))
         docIdx = model.doc_topic_[:, topicIdx].argmax()
         print "Doc: ", data['zhuti'][docIdx], ' ', data['_id'][docIdx]
 

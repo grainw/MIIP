@@ -19,7 +19,7 @@ parser.add_argument('-u', '--userdict',  help='specified user dict',  type=str)
 parser.add_argument('-f', '--filename',  help='file name for output', type=str)
 args = parser.parse_args()
 
-data = FileUtils(args.sourcefile, FileType.JSON).doRead()
+data = FileUtils(args.data, FileType.JSON).doRead()
 stop_words = FileUtils(args.stopwords, FileType.TEXT, ["words"]).doRead()
 
 #print data.iloc[0]['content']
@@ -53,4 +53,4 @@ for i in range(len(data.index)):
 
 for key in dict_word:
     pd.DataFrame(dict_word[key], columns=['_id', 'content', 'from', 'url', 'zhuti']).to_csv(args.filename + str(int(key*100)) + '.csv', encoding='utf-8')
-pd.concat([i for i in all_words]).to_csv(args.filename + '.csv', encoding='utf-8')
+pd.concat([i for i in all_words]).to_csv(args.filename + 'allwords.csv', encoding='utf-8')
