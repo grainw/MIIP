@@ -32,7 +32,6 @@ class Logger:
 
  def cri(self,message):
   self.logger.critical(message)
-
 if __name__ =='__main__':
  logyyx = Logger('test.log',logging.INFO,logging.INFO)
  logyyx.debug('一个debug信息')
