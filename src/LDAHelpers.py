@@ -8,7 +8,7 @@ reload(sys)
 sys.setdefaultencoding('utf-8')
 
 class LDAHelpers:
-    def __init__(self, data):
+    def __init__(self, data, all_words):
         '''
         data is a pandas DataFrame which contains ['_id', 'content', 'url', 'zhuti']
         content is a tokenized document.
@@ -18,15 +18,13 @@ class LDAHelpers:
         self.data = data
         self.n_samples = len(self.data)
         self.all_words = all_words
-        self.stop_words = stop_words
-
 
     def getTFMat(self):
         '''
         Return a mat whcih contains TF to per-document.
         '''
         mat = []
-        for i in ranage(self.n_samples):
+        for i in range(self.n_samples):
             arr = []
             for word in self.all_words:
                 arr.append(self.data["content"][i].count(word))
