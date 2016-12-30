@@ -33,7 +33,7 @@ class ModelPredict:
         data_samples = FileUtils(self.sourceFilePath, FileType.JSON).doRead()
         self.data_label = data_samples['label']
         stop_words = FileUtils(stopWordsPath, FileType.TEXT, ["stopwords"]).doRead()
-        train_all_words = FileUtils(allWordsPath, FileType.CVS, ["allwords"]).doRead()
+        train_all_words = FileUtils(allWordsPath, FileType.CSV, ["allwords"]).doRead()
         self.data_samples = data_samples
         self.stop_words = stop_words
         self.train_all_words = train_all_words
