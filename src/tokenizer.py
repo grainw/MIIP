@@ -26,7 +26,7 @@ dict_word = {}
 theta = [0.3, 0.5, 0.7]
 all_words = []
 for i in range(len(data.index)):
-    doc = DataFactoryImpl(data.iloc[i:i+1], args.userdict, stop_words).getAllWords()
+    doc = DataFactoryImpl(data.iloc[i:i+1], stop_words, args.userdict).getAllWords()
     all_words.append(doc)
     doc_word = list(set(doc['content'].tolist()[0]))
     X = LDAHelpers(doc, doc_word).getTFMat()

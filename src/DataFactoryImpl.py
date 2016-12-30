@@ -17,12 +17,19 @@ class DataFactoryImpl:
     '''
     Class for dealing with data.
     '''
-    def __init__(self, data, user_dict, stop_words):
+    def __init__(self, data, stop_words, user_dict=None):
         self.data = data
         self.user_dict = user_dict
         self.stop_words = list(stop_words[stop_words.columns[0]])
     def output(self):
          pass
+
+    def splitString(self):
+        words = []
+        for idx, series in self.data.iterrows():
+            string = series['content'].split(' ')
+            words.extend(string)
+        return list(set(words))
 
     def getAllWords(self):
         '''
@@ -30,7 +37,8 @@ class DataFactoryImpl:
         dataFrame 的数据结构为[_id, content, from, url, zhuti]
         '''
         item = []
-        jieba.load_userdict(self.user_dict)
+        if self.user_dict:
+            jieba.load_userdict(self.user_dict)
         for idx, series in self.data.iterrows():
             seg_list = pseg.cut(series['content'])
             words = [normalize(word) for word, flag in seg_list if normalize(word) != '' and normalize(word) not in self.stop_words and flag == 'n']
