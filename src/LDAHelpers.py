@@ -16,7 +16,6 @@ class LDAHelpers:
         stop_words is also a simple list
         '''
         self.data = data
-        self.n_samples = len(self.data)
         self.all_words = all_words
 
     def getTFMat(self):
@@ -24,9 +23,9 @@ class LDAHelpers:
         Return a mat whcih contains TF to per-document.
         '''
         mat = []
-        for i in range(self.n_samples):
+        for idx, series in self.data.iterrows():
             arr = []
             for word in self.all_words:
-                arr.append(self.data["content"][i].count(word))
+                arr.append(series["content"].count(word))
             mat.append(arr)
         return mat

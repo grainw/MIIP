@@ -13,7 +13,7 @@ jieba.enable_parallel()
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-f', "--sourcefile", help="number of threads for running", type=str)
+parser.add_argument('-f', "--sourcefile", help="data file", type=str)
 parser.add_argument('-s', '--stopwords', help='stop words list', type=str)
 parser.add_argument('-u', '--userdict', help='specified user dict', type=str)
 args = parser.parse_args()
