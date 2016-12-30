@@ -16,12 +16,12 @@ class ModelPredict:
         self.sourceFilePath = sourceFilePath
         self.n_top_words = 10
         self.n_top_likely_topic = 5
-        self.model = None
+        self.list_models = None
         self.data_samples = None
         self.data_label = None
         self.stop_words = None
         self.train_all_words = None
-        self.doc_words  = None
+        self.listdoc_words  = None
         self.docIdxs = None
         self.features = 15
         self.trainModel  = pickle.load(open(modelPath))
@@ -37,14 +37,18 @@ class ModelPredict:
         self.data_samples = data_samples
         self.stop_words = stop_words
         self.train_all_words = train_all_words
+        list_models = []
+        list_doc_words = []
         for i in range(len(data_samples.index)):
             doc = DataFactoryImpl(data_samples.iloc[i:i+1], userDictPath, stop_words).getAllWords()
             doc_words =  list(set(doc['content'].tolist()[0]))
+            list_doc_words.append(doc_words)
             X = LDAHelpers(doc, doc_words).getTFMat()
             model = lda.LDA(1, n_iter=1500, random_state=1)
             model.fit(np.array(X))
-            self.model = model
-            self.doc_words = doc_words
+            list_models.append(model)
+        self.list_models = list_models
+        self.listdoc_words = list_doc_words
 
     def getTestTopWords(distr, words_list, n_top_words):
         new_distr = []
@@ -76,16 +80,19 @@ class ModelPredict:
 
     def predict(self):
         #load model
-        test_topic_prob, test_top_words =self.getTestTopWords(self.model.topic_word_, self.doc_words, self.n_top_words)
-        train_topic_prob = self.getTrainTopWordsProb(self.trainModel.topic_word_, test_top_words, list(self.train_all_words))
-        topicIdx = self.getMostLikelyTopic(train_topic_prob, test_topic_prob,self.n_top_likely_topic)
-        for idx in topicIdx:
-                print " ".join([list(self.train_all_words)[i]
+        for m in len(self.list_models):
+            test_topic_prob, test_top_words =self.getTestTopWords(self.list_models[m].topic_word_, self.doc_words[m], self.n_top_words)
+            train_topic_prob = self.getTrainTopWordsProb(self.trainModel.topic_word_, test_top_words, list(self.train_all_words))
+            topicIdx = self.getMostLikelyTopic(train_topic_prob, test_topic_prob,self.n_top_likely_topic)
+            for idx in topicIdx:
+                    print " ".join([list(self.train_all_words)[i]
                             for i in self.trainModel.topic_word_[idx].argsort()[:-self.features- 1:-1]])
-        docIdxs =[]
-        for k in range(self.n_top_likely_topic):
-            docIdx = self.trainModel.doc_topic_[:,topicIdx[k]].argmax()
-            docIdxs.append(docIdx)
+            docIdxs =[]
+            for k in range(self.n_top_likely_topic):
+                if k ==0:
+                    docIdx = self.trainModel.doc_topic_[:,topicIdx[k]].argmax()
+                    docIdxs.append(docIdx)
+                docIdx = self.trainModel.doc_topic_[:,topicIdx[k]].argmax()
         log.info("most like docs:")
         log.info(docIdxs)
         self.docIdxs = docIdxs
