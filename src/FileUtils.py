@@ -9,7 +9,7 @@ import re
 
 class FileType:
     JSON = 0
-    CVS = 1
+    CSV = 1
     TEXT = 2
 
 class FileUtils:
@@ -23,8 +23,8 @@ class FileUtils:
     def doRead(self):
         if self.type == FileType.JSON:
             return self.doReadJson()
-        elif self.type == FileType.CVS:
-            return self.doReadCvs()
+        elif self.type == FileType.CSV:
+            return self.doReadCsv()
         elif self.type == FileType.TEXT:
             return self.doReadText()
 
@@ -34,7 +34,7 @@ class FileUtils:
 
     #Read csv files
     def doReadCsv(self):
-        return pd.read_cvs(self.path, names=self.names)
+        return pd.read_csv(self.path, names=self.names)
 
     #Read text files
     def doReadText(self):
