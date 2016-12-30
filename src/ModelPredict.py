@@ -102,7 +102,7 @@ class ModelPredict:
 
 if __name__ == '__main__':
     log.info('begin to load model')
-    mp = ModelPredict(sourceFilePath,stopWordsPath,allWordsPath)
+    mp = ModelPredict(sourceFilePath)
     mp.processData()
     mp.predict()
     mp.accuray()
