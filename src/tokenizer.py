@@ -41,7 +41,9 @@ for i in range(len(data.index)):
                 words.append(doc_word[k])
             else:
                 break
-        item = (doc['_id'][0], words, doc['from'][0], doc['url'][0], doc['zhuti'][0])
+        #sentence = ' '.join(words)
+        #print sentence
+        item = (doc['_id'][0], ' '.join(words), doc['from'][0], doc['url'][0], doc['zhuti'][0])
         if j in dict_word.keys():
             dict_word[j].append(item)
         else :
@@ -49,5 +51,5 @@ for i in range(len(data.index)):
             dict_word[j].append(item)
 
 for key in dict_word:
-    pd.DataFrame(dict_word[key], columns=['_id', 'content', 'from', 'url', 'zhuti']).to_csv('testWords' + str(key*100) + '.csv', encoding='utf-8')
+    pd.DataFrame(dict_word[key], columns=['_id', 'content', 'from', 'url', 'zhuti']).to_csv('testWords' + str(int(key*100)) + '.csv', encoding='utf-8')
 pd.concat([i for i in all_words]).to_csv('testAllWords.csv', encoding='utf-8')
