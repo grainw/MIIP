@@ -82,12 +82,15 @@ class ModelPredict:
 
     def predict(self):
         #load model
+        #加入lda
         for m in range(len(self.list_models)):
             sTopic_Word = self.list_models[m].topic_word_
             sWordSet = self.listdoc_words[m]
             test_topic_prob, test_top_words =self.getTestTopWords(sTopic_Word ,sWordSet, self.n_top_words)
             train_topic_prob = self.getTrainTopWordsProb(self.trainModel.topic_word_, test_top_words, list(self.train_all_words))
             topicIdx = self.getMostLikelyTopic(train_topic_prob, test_topic_prob,self.n_top_likely_topic)
+            log.info('-------------------------------------')
+            log.info('most like docs:'+str(topicIdx))
             for idx in topicIdx:
                 log.info(" ".join([list(sWordSet)[i]
                                 for i in sTopic_Word[idx].argsort()[:-self.features- 1:-1]]))
@@ -99,8 +102,8 @@ class ModelPredict:
                     docIdx = self.trainModel.doc_topic_[:,topicIdx[k]].argmax()
                     docIdxs.append(docIdx)
                     break
-        log.info("most like docs:")
-        log.info(docIdxs)
+        # log.info("most like docs:")
+        # log.info(docIdxs)
         self.docIdxs = docIdxs
         return docIdxs
 

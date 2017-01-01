@@ -32,10 +32,10 @@ class Logger:
 
  def cri(self,message):
   self.logger.critical(message)
-if __name__ =='__main__':
- logyyx = Logger('test.log',logging.INFO,logging.INFO)
- logyyx.debug('一个debug信息')
- logyyx.info('一个info信息')
- logyyx.war('一个warning信息')
- logyyx.error('一个error信息')
- logyyx.cri('一个致命critical信息')
+# if __name__ =='__main__':
+#  logyyx = Logger('test.log',logging.INFO,logging.INFO)
+#  logyyx.debug('一个debug信息')
+#  logyyx.info('一个info信息')
+#  logyyx.war('一个warning信息')
+#  logyyx.error('一个error信息')
+#  logyyx.cri('一个致命critical信息')
