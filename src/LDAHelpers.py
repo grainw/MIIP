@@ -1,7 +1,6 @@
 #! /usr/bin/python
 #coding=utf-8
 import pickle
-from LoggerFacotory import *
 import glob
 import sys
 reload(sys)

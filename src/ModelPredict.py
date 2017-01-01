@@ -22,6 +22,7 @@ class ModelPredict:
         self.stop_words = None
         self.train_all_words = None
         self.listdoc_words  = None
+        self.zhuti = None
         self.docIdxs = None
         self.features = 15
         self.trainModel  = pickle.load(open(modelPath))
@@ -32,6 +33,7 @@ class ModelPredict:
     def processData(self):
         data_samples = FileUtils(self.sourceFilePath, FileType.JSON).doRead()
         self.data_label = data_samples['label']
+        self.zhuti = data_samples['zhuti']
         stop_words = FileUtils(stopWordsPath, FileType.TEXT, ["stopwords"]).doRead()
         train_all_words = FileUtils(allWordsPath, FileType.CSV, ["allwords"]).doRead()
         self.data_samples = data_samples
@@ -40,7 +42,7 @@ class ModelPredict:
         list_models = []
         list_doc_words = []
         for i in range(len(data_samples.index)):
-            doc = DataFactoryImpl(data_samples.iloc[i:i+1], userDictPath, stop_words).getAllWords()
+            doc = DataFactoryImpl(data_samples.iloc[i:i+1], stop_words,userDictPath).getAllWords()
             doc_words =  list(set(doc['content'].tolist()[0]))
             list_doc_words.append(doc_words)
             X = LDAHelpers(doc, doc_words).getTFMat()
@@ -50,7 +52,7 @@ class ModelPredict:
         self.list_models = list_models
         self.listdoc_words = list_doc_words
 
-    def getTestTopWords(distr, words_list, n_top_words):
+    def getTestTopWords(self,distr, words_list, n_top_words):
         new_distr = []
         words = []
         for topic in distr:
@@ -59,7 +61,7 @@ class ModelPredict:
             words.extend(np.array(words_list)[idx])
         return new_distr, words
 
-    def getTrainTopWordsProb(topic_word_distr, test_top_words, wordset):
+    def getTrainTopWordsProb(self,topic_word_distr, test_top_words, wordset):
         topics = []
         for topic in topic_word_distr:
             num = len(test_top_words)
@@ -72,7 +74,7 @@ class ModelPredict:
             topics.append(tmp)
         return topics
 
-    def getMostLikelyTopic(train, test,n_top_likely_topic):
+    def getMostLikelyTopic(self,train, test,n_top_likely_topic):
         dist = []
         for tr in train:
             dist.append(la.norm(np.array(tr)-np.array(test)))
@@ -80,19 +82,23 @@ class ModelPredict:
 
     def predict(self):
         #load model
-        for m in len(self.list_models):
-            test_topic_prob, test_top_words =self.getTestTopWords(self.list_models[m].topic_word_, self.doc_words[m], self.n_top_words)
+        for m in range(len(self.list_models)):
+            sTopic_Word = self.list_models[m].topic_word_
+            sWordSet = self.listdoc_words[m]
+            test_topic_prob, test_top_words =self.getTestTopWords(sTopic_Word ,sWordSet, self.n_top_words)
             train_topic_prob = self.getTrainTopWordsProb(self.trainModel.topic_word_, test_top_words, list(self.train_all_words))
             topicIdx = self.getMostLikelyTopic(train_topic_prob, test_topic_prob,self.n_top_likely_topic)
             for idx in topicIdx:
-                    print " ".join([list(self.train_all_words)[i]
-                            for i in self.trainModel.topic_word_[idx].argsort()[:-self.features- 1:-1]])
+                log.info(" ".join([list(sWordSet)[i]
+                                for i in sTopic_Word[idx].argsort()[:-self.features- 1:-1]]))
+            for i in topicIdx:
+                log.info(self.zhuti[self.list_models[m].doc_topic_[:,i].argmax()])
             docIdxs =[]
             for k in range(self.n_top_likely_topic):
                 if k ==0:
                     docIdx = self.trainModel.doc_topic_[:,topicIdx[k]].argmax()
                     docIdxs.append(docIdx)
-                docIdx = self.trainModel.doc_topic_[:,topicIdx[k]].argmax()
+                    break
         log.info("most like docs:")
         log.info(docIdxs)
         self.docIdxs = docIdxs

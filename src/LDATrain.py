@@ -2,7 +2,6 @@
 from FileUtils import *
 from DataFactoryImpl import *
 from LDAHelpers import *
-from LoggerFacotory import *
 import jieba.posseg as pseg
 import jieba
 import lda
