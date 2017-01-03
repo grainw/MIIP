@@ -78,7 +78,7 @@ class ModelPredict:
         dist = []
         for tr in train:
             dist.append(la.norm(np.array(tr)-np.array(test)))
-        return np.array(dist).argsort()[0:-n_top_likely_topic-1:-1]
+        return np.array(dist).argsort()[0:n_top_likely_topic]
 
     def predict(self):
         #load model
@@ -123,10 +123,3 @@ if __name__ == '__main__':
     mp.predict()
     mp.accuray()
     log.info('ending to predict model')
-
-
-
-
-
-
-
