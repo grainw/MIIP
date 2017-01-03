@@ -75,9 +75,8 @@ class ModelPredict:
     def getMostLikelyTopic(self,train, test,n_top_likely_topic):
         dist = []
         for tr in train:
-            dist.append(la.norm(np.cos(np.array(tr),np.array(test))))
-            # dist.append(la.norm(np.array(tr)-np.array(test)))
-        return np.array(dist).argsort()[0:n_top_likely_topic]
+            dist.append(la.norm(np.array(tr)-np.array(test)))
+        return np.array(dist).argsort()[0:-n_top_likely_topic-1:-1]
 
     def predict(self):
         #load model
@@ -90,6 +89,9 @@ class ModelPredict:
             train_topic_prob = self.getTrainTopWordsProb(self.trainModel.topic_word_, test_top_words, list(self.train_all_words))
             topicIdx = self.getMostLikelyTopic(train_topic_prob, test_topic_prob,self.n_top_likely_topic)
             log.info('most like docs:'+str(topicIdx))
+            for idx in topicIdx:
+                log.info(" ".join([list(self.train_all_words)[i]
+                                for i in self.trainModel.topic_word_[idx].argsort()[:-self.features- 1:-1]]))
             for i in topicIdx:
                 log.info(self.zhuti[self.trainModel.doc_topic_[:,i].argmax()])
             for k in range(self.n_top_likely_topic):
@@ -103,7 +105,6 @@ class ModelPredict:
     def accuray(self):
         test_label = np.array(self.data_label).ravel()
         train_label = np.array(self.docIdxs)
-        log.info("结果为："+str(train_label))
         result = (test_label == train_label)   # True则预测正确，False则预测错误
         c = np.count_nonzero(result)    # 统计预测正确的个数
         log.info(c)
