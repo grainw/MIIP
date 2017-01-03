@@ -18,19 +18,25 @@ def printTopWords(model, allWords, n_top_words):
         print "Doc: ", data['zhuti'][docIdx], ' ', data['_id'][docIdx]
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-d', "--data",          help="data file",                   type=str)
+parser.add_argument('-d', '--data',          help='data file',                   type=str)
 parser.add_argument('-s', '--stopwords',     help='stop words list',             type=str)
 parser.add_argument('-w', '--weightedwords', help='weighted words for per data', type=str)
 parser.add_argument('-f', '--filename',      help='filename for output',         type=str)
 args = parser.parse_args()
 
 data          = FileUtils(args.data, FileType.CSV).doRead()
+##split string into words, return a list
+item = []
+for idx, s in data.iterrows():
+    words = s['content'].strip().split(' ')
+    item.append((s['_id'], words))
+    
+new_data      = pd.DataFrame(item, columns=['_id','content'])
 reduced_data  = FileUtils(args.weightedwords, FileType.CSV).doRead()
 stop_words    = FileUtils(args.stopwords, FileType.TEXT, ["words"]).doRead()
 all_words     = DataFactoryImpl(reduced_data, stop_words).splitString()
-X             = LDAHelpers(data, all_words).getTFMat()
+X             = LDAHelpers(new_data, all_words).getTFMat()
 model         = lda.LDA(len(data.index), n_iter = 1500, random_state=1)
 model.fit(np.array(X))
 pickle.dump(model, args.filename)
-
 printTopWords(model, all_words, 20)
