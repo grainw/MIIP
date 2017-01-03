@@ -2,6 +2,7 @@
 # -*- coding: UTF-8 -*-
 
 from LoggerFacotory import *
+import os
 
 
 
@@ -10,8 +11,8 @@ from LoggerFacotory import *
 log = Logger('milp.log', logging.INFO, logging.INFO)
 
 
-modelPath = '../train/samples-1-2017-01-01-15-03-55/train_model'
-stopWordsPath = '../train/stopwords1.txt'
-userDictPath = '../train/user.dict'
-allWordsPath = '../train/samples-1-2017-01-01-15-03-55/word_set'
-sourceFilePath = '../train/dxy1.json'
+modelPath ='../data/testmodel/train_model'
+stopWordsPath ='../data/testmodel/stopwords1.txt'
+userDictPath ='../data/testmodel/user.dict'
+allWordsPath ='../data/testmodel/word_set'
+sourceFilePath ='../data/testmodel/dxy1.json'
