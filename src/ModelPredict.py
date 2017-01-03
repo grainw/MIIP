@@ -92,6 +92,7 @@ class ModelPredict:
             log.info('-------------------------------------')
             log.info('most like docs:'+str(topicIdx))
             for idx in topicIdx:
+                print idx
                 log.info(" ".join([list(sWordSet)[i]
                                 for i in sTopic_Word[idx].argsort()[:-self.features- 1:-1]]))
             for i in topicIdx:
