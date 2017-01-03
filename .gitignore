@@ -1,3 +1,6 @@
 .idea
 .idea/*
 *.pyc
+src/*.csv
+src/*.cvs
+src/*.json
