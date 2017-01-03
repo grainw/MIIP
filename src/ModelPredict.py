@@ -20,7 +20,7 @@ class ModelPredict:
         self.data_samples = None
         self.data_label = None
         self.stop_words = None
-        self.train_all_words = None
+        self.train_all_words = pickle.load(open(allWordsPath))
         self.listdoc_words  = None
         self.zhuti = None
         self.docIdxs = None
@@ -35,10 +35,8 @@ class ModelPredict:
         self.data_label = data_samples['label']
         self.zhuti = data_samples['zhuti']
         stop_words = FileUtils(stopWordsPath, FileType.TEXT, ["stopwords"]).doRead()
-        train_all_words = FileUtils(allWordsPath, FileType.CSV, ["allwords"]).doRead()
         self.data_samples = data_samples
         self.stop_words = stop_words
-        self.train_all_words = train_all_words
         list_models = []
         list_doc_words = []
         for i in range(len(data_samples.index)):
@@ -77,39 +75,35 @@ class ModelPredict:
     def getMostLikelyTopic(self,train, test,n_top_likely_topic):
         dist = []
         for tr in train:
-            dist.append(la.norm(np.array(tr)-np.array(test)))
-        return np.array(dist).argsort()[0:-n_top_likely_topic-1:-1]
+            dist.append(la.norm(np.cos(np.array(tr),np.array(test))))
+            # dist.append(la.norm(np.array(tr)-np.array(test)))
+        return np.array(dist).argsort()[0:n_top_likely_topic]
 
     def predict(self):
         #load model
         #加入lda
+        docIdxs =[]
         for m in range(len(self.list_models)):
             sTopic_Word = self.list_models[m].topic_word_
             sWordSet = self.listdoc_words[m]
             test_topic_prob, test_top_words =self.getTestTopWords(sTopic_Word ,sWordSet, self.n_top_words)
             train_topic_prob = self.getTrainTopWordsProb(self.trainModel.topic_word_, test_top_words, list(self.train_all_words))
             topicIdx = self.getMostLikelyTopic(train_topic_prob, test_topic_prob,self.n_top_likely_topic)
-            log.info('-------------------------------------')
             log.info('most like docs:'+str(topicIdx))
-            for idx in topicIdx:
-                log.info(" ".join([list(sWordSet)[i]
-                                for i in sTopic_Word[idx].argsort()[:-self.features- 1:-1]]))
             for i in topicIdx:
-                log.info(self.zhuti[self.list_models[m].doc_topic_[:,i].argmax()])
-            docIdxs =[]
+                log.info(self.zhuti[self.trainModel.doc_topic_[:,i].argmax()])
             for k in range(self.n_top_likely_topic):
                 if k ==0:
                     docIdx = self.trainModel.doc_topic_[:,topicIdx[k]].argmax()
                     docIdxs.append(docIdx)
                     break
-        # log.info("most like docs:")
-        # log.info(docIdxs)
         self.docIdxs = docIdxs
         return docIdxs
 
     def accuray(self):
         test_label = np.array(self.data_label).ravel()
         train_label = np.array(self.docIdxs)
+        log.info("结果为："+str(train_label))
         result = (test_label == train_label)   # True则预测正确，False则预测错误
         c = np.count_nonzero(result)    # 统计预测正确的个数
         log.info(c)
