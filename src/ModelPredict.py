@@ -20,7 +20,7 @@ class ModelPredict:
         self.data_samples = None
         self.data_label = None
         self.stop_words = None
-        self.train_all_words = None
+        self.train_all_words = pickle.load(open(allWordsPath))
         self.listdoc_words  = None
         self.zhuti = None
         self.docIdxs = None
@@ -35,10 +35,8 @@ class ModelPredict:
         self.data_label = data_samples['label']
         self.zhuti = data_samples['zhuti']
         stop_words = FileUtils(stopWordsPath, FileType.TEXT, ["stopwords"]).doRead()
-        train_all_words = FileUtils(allWordsPath, FileType.CSV, ["allwords"]).doRead()
         self.data_samples = data_samples
         self.stop_words = stop_words
-        self.train_all_words = train_all_words
         list_models = []
         list_doc_words = []
         for i in range(len(data_samples.index)):
@@ -78,33 +76,29 @@ class ModelPredict:
         dist = []
         for tr in train:
             dist.append(la.norm(np.array(tr)-np.array(test)))
-        return np.array(dist).argsort()[0:n_top_likely_topic]
+        return np.array(dist).argsort()[0:-n_top_likely_topic-1:-1]
 
     def predict(self):
         #load model
         #加入lda
+        docIdxs =[]
         for m in range(len(self.list_models)):
             sTopic_Word = self.list_models[m].topic_word_
             sWordSet = self.listdoc_words[m]
             test_topic_prob, test_top_words =self.getTestTopWords(sTopic_Word ,sWordSet, self.n_top_words)
             train_topic_prob = self.getTrainTopWordsProb(self.trainModel.topic_word_, test_top_words, list(self.train_all_words))
             topicIdx = self.getMostLikelyTopic(train_topic_prob, test_topic_prob,self.n_top_likely_topic)
-            log.info('-------------------------------------')
             log.info('most like docs:'+str(topicIdx))
             for idx in topicIdx:
-                print idx
-                log.info(" ".join([list(sWordSet)[i]
-                                for i in sTopic_Word[idx].argsort()[:-self.features- 1:-1]]))
+                log.info(" ".join([list(self.train_all_words)[i]
+                                for i in self.trainModel.topic_word_[idx].argsort()[:-self.features- 1:-1]]))
             for i in topicIdx:
-                log.info(self.zhuti[self.list_models[m].doc_topic_[:,i].argmax()])
-            docIdxs =[]
+                log.info(self.zhuti[self.trainModel.doc_topic_[:,i].argmax()])
             for k in range(self.n_top_likely_topic):
                 if k ==0:
                     docIdx = self.trainModel.doc_topic_[:,topicIdx[k]].argmax()
                     docIdxs.append(docIdx)
                     break
-        # log.info("most like docs:")
-        # log.info(docIdxs)
         self.docIdxs = docIdxs
         return docIdxs
 
@@ -124,3 +118,10 @@ if __name__ == '__main__':
     mp.predict()
     mp.accuray()
     log.info('ending to predict model')
+
+
+
+
+
+
+
