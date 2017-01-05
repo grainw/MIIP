@@ -14,8 +14,8 @@ load model to predict or accuray
 class ModelPredict:
     def __init__(self,sourceFilePath):
         self.sourceFilePath = sourceFilePath
-        self.n_top_words = 10
-        self.n_top_likely_topic = 5
+        self.n_top_words = 15
+        self.n_top_likely_topic = 10
         self.list_models = None
         self.data_samples = None
         self.data_label = None
@@ -30,6 +30,7 @@ class ModelPredict:
         self.trainModel  = pickle.load(open(modelPath))
         self.dictVail = []
         self.num = 2
+        self.fromzhuti = None
     '''
     input sourceFilePath
     output X matrix tf
@@ -42,6 +43,7 @@ class ModelPredict:
         self.stop_words = FileUtils(stopWordsPath, FileType.TEXT, ["stopwords"]).doRead()
         # self.train_all_words =FileUtils(allWordsPath, FileType.CSV).doRead()['content']
         self.train_all_words = DataFactoryImpl(FileUtils(allWordsPath, FileType.CSV).doRead(),self.stop_words).splitString()
+        self.fromzhuti = FileUtils(fromFilePath, FileType.JSON).doRead()['zhuti']
         self.data_samples = data_samples
         list_models = []
         list_doc_words = []
@@ -96,6 +98,8 @@ class ModelPredict:
             sTopic_Word = self.list_models[m].topic_word_
             sWordSet = self.listdoc_words[m]
             test_topic_prob, test_top_words =self.getTestTopWords(sTopic_Word ,sWordSet, self.n_top_words)
+            for m in test_top_words:
+                print m
             train_topic_prob = self.getTrainTopWordsProb(self.trainModel.topic_word_, test_top_words, list(self.train_all_words))
             topicIdx = self.getMostLikelyTopic(train_topic_prob, test_topic_prob,self.n_top_likely_topic)
             log.info('most like docs:'+str(topicIdx))
@@ -104,8 +108,11 @@ class ModelPredict:
             #                     for i in self.trainModel.topic_word_[idx].argsort()[:-self.features- 1:-1]]))
             for i in topicIdx:
                 # 只获取第一个主题
-                log.info(self.zhuti[self.trainModel.doc_topic_[:,i].argmax()])
-                self.predict_zhuti.append(self.zhuti[self.trainModel.doc_topic_[:,i].argmax()])
+                log.info(self.fromzhuti[self.trainModel.doc_topic_[:,i].argmax()])
+            for i in topicIdx:
+                # 只获取第一个主题
+                # log.info(self.fromzhuti[self.trainModel.doc_topic_[:,i].argmax()])
+                self.predict_zhuti.append(self.fromzhuti[self.trainModel.doc_topic_[:,i].argmax()])
                 break
         #     for k in range(self.n_top_likely_topic):
         #         if k ==0:
