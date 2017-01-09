@@ -41,6 +41,6 @@ class DataFactoryImpl:
             jieba.load_userdict(self.user_dict)
         for idx, series in self.data.iterrows():
             seg_list = pseg.cut(series['content'])
-            words = [normalize(word) for word, flag in seg_list if normalize(word) != '' and normalize(word) not in self.stop_words and flag == 'n']
+            words = [normalize(word) for word, flag in seg_list if normalize(word) != '' and normalize(word) not in self.stop_words and flag in ['n','ns','nsf','nt','nz','nl','ng'] ]
             item.append((series['_id'], words, series['from'], series['url'], series['zhuti']))
         return pd.DataFrame(item, columns=['_id', 'content', 'from', 'url', 'zhuti'])

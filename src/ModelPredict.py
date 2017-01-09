@@ -15,13 +15,13 @@ class ModelPredict:
     def __init__(self,sourceFilePath):
         self.sourceFilePath = sourceFilePath
         self.n_top_words = 15
-        self.n_top_likely_topic = 10
+        self.n_top_likely_topic = 5
         self.list_models = None
         self.data_samples = None
         self.data_label = None
         self.stop_words = None
-        # self.train_all_words = pickle.load(open(allWordsPath))
-        self.train_all_words = None
+        self.train_all_words = pickle.load(open(allWordsPath))
+        # self.train_all_words = None
         self.listdoc_words  = None
         self.zhuti = None
         self.docIdxs = None
@@ -29,7 +29,7 @@ class ModelPredict:
         self.features = 15
         self.trainModel  = pickle.load(open(modelPath))
         self.dictVail = []
-        self.num = 2
+        self.num = 4793
         self.fromzhuti = None
     '''
     input sourceFilePath
@@ -42,7 +42,7 @@ class ModelPredict:
         self.zhuti = data_samples['zhuti']
         self.stop_words = FileUtils(stopWordsPath, FileType.TEXT, ["stopwords"]).doRead()
         # self.train_all_words =FileUtils(allWordsPath, FileType.CSV).doRead()['content']
-        self.train_all_words = DataFactoryImpl(FileUtils(allWordsPath, FileType.CSV).doRead(),self.stop_words).splitString()
+        # self.train_all_words = DataFactoryImpl(FileUtils(allWordsPath, FileType.CSV).doRead(),self.stop_words).splitString()
         self.fromzhuti = FileUtils(fromFilePath, FileType.JSON).doRead()['zhuti']
         self.data_samples = data_samples
         list_models = []
@@ -87,7 +87,8 @@ class ModelPredict:
     def getMostLikelyTopic(self,train, test,n_top_likely_topic):
         dist = []
         for tr in train:
-            dist.append(la.norm(np.array(tr)-np.array(test)))
+            # dist.append(la.norm(np.array(tr)-np.array(test)))
+            dist.append(la.norm(np.cos(np.array(tr),np.array(test))))
         return np.array(dist).argsort()[0:n_top_likely_topic]
 
     def predict(self):
@@ -136,11 +137,12 @@ class ModelPredict:
                 k = k+1
             test_label =  np.array(test_predict).ravel()
         else:
-            test_label = np.array( self.zhuti).ravel()
+            test_label = np.array( self.zhuti[0:len(self.data_samples.index)/self.num]).ravel()
         ##应用主题打标
         # train_label = np.array(self.docIdxs)
         train_label = np.array(self.predict_zhuti)
         result = (test_label == train_label)   # True则预测正确，False则预测错误
+
         c = np.count_nonzero(result)    # 统计预测正确的个数
         log.info(c)
         log.info('Accuracy: %.2f%%' % (100 * float(c) / float(len(result))))
