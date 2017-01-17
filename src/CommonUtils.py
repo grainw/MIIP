@@ -11,9 +11,9 @@ import os
 log = Logger('milp.log', logging.INFO, logging.INFO)
 
 
-modelPath ='../data/testmodel/dxyTrainModel'
-stopWordsPath ='../data/testmodel/stopwords1.txt'
+modelPath ='../data/testmodel/39kqallTrainModel'
+stopWordsPath ='../data/common/stopwords'
 userDictPath ='../data/testmodel/user1.dict'
-allWordsPath ='../data/testmodel/dxyTrainallWords'
+allWordsPath ='../data/testmodel/39kqWith50TrainWords'
 sourceFilePath ='../data/testmodel/testdxy.json'
-fromFilePath = '../data/dxy/dxy.json'
+fromFilePath = '../data/39net/39kqAllallwords.csv'
