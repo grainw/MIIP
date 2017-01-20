@@ -29,7 +29,7 @@ class ModelPredict:
         self.features = 15
         self.trainModel  = pickle.load(open(modelPath))
         self.dictVail = []
-        self.num = 4793
+        self.num = 21
         self.fromzhuti = None
     '''
     input sourceFilePath
@@ -43,7 +43,7 @@ class ModelPredict:
         self.stop_words = FileUtils(stopWordsPath, FileType.TEXT, ["stopwords"]).doRead()
         # self.train_all_words =FileUtils(allWordsPath, FileType.CSV).doRead()['content']
         # self.train_all_words = DataFactoryImpl(FileUtils(allWordsPath, FileType.CSV).doRead(),self.stop_words).splitString()
-        self.fromzhuti = FileUtils(fromFilePath, FileType.JSON).doRead()['zhuti']
+        self.fromzhuti = FileUtils(fromFilePath, FileType.CSV).doRead()['zhuti']
         self.data_samples = data_samples
         list_models = []
         list_doc_words = []
