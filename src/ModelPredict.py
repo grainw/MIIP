@@ -29,7 +29,7 @@ class ModelPredict:
         self.features = 15
         self.trainModel  = pickle.load(open(modelPath))
         self.dictVail = []
-        self.num = 21
+        self.num = 1
         self.fromzhuti = None
     '''
     input sourceFilePath
