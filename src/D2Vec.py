@@ -3,6 +3,7 @@
 from gensim import models,corpora,similarities
 import jieba.posseg as pseg
 from gensim.models.doc2vec import TaggedDocument,Doc2Vec
+
 import pandas as pd
 import jieba.analyse
 import jieba
