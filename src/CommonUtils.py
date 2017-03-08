@@ -21,3 +21,12 @@ fromFilePath = '../data/39net/39kqAllallwords.csv'
 # fromFilePath = '../data/39net/yanhouallwords.csv'
 featuresPath = '../data/39net/39kq.txt'
 saveModelPath = '../data/modeldata1/'
+
+MONGO_HOST = '172.24.8.15'
+MONGO_PORT = 27017
+MONGO_AUTH_USER = 'manager'
+MONGO_AUTH_PASSWORD = 'mongodb123'
+MONGO_AUTH = True
+MONGO_DATABASE = 'admin'
+MONGO_REAL_DATABASE = 'crawler'
+
