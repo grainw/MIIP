@@ -181,7 +181,7 @@ def DescribingSymptoms(label):
     # sp1 = saveModelPath+label+'model'
     # saveModel = open( sp1, 'w')
     # pickle.dump(train_model, saveModel)
-    skc.printTopWords(train_model, nWords, 20,x_label=x_data)
+    # skc.printTopWords(train_model, nWords, 20,x_label=x_data)
     # 组装成新的矩阵
     test_top_words = []
     test_topic_prob = []
@@ -197,6 +197,9 @@ def DescribingSymptoms(label):
     print '预测结果：'
     ids =[]
     news_ids = []
+    # 统计每天病症状的计数统计
+    countDict = {}
+    cycle = 3
     for i in topicIdx:
         # 只获取第一个主题
         # print x_data['zhuti'][train_model.doc_topic_[:,i].argmax()]
@@ -205,7 +208,30 @@ def DescribingSymptoms(label):
         if id not in news_ids:
             news_ids.append(id)
     for i in news_ids:
-        print i
+
+        labelZH = labelF[np.where(x_data['zhuti']==i)[0][0]]
+        if len(labelZH)==0:
+            continue
+        # print i
+        print '以下症状是否有过：'
+        count = 0
+        for ct in range(cycle):
+            if ct >=len(labelZH):
+                continue
+            print labelZH[ct]
+            isTrueRaw_input = raw_input('请输入1(是)或者0(否)：').replace("\t","").replace(" ","").strip()
+            if '1'==isTrueRaw_input:
+                count = count+1
+        countDict[i] = count
+    print '您最有可能获取的疾病为:'
+    sortCountDict = sorted(countDict.items(), lambda x, y: cmp(x[1], y[1]), reverse=True)
+    for key in sortCountDict:
+        print key[0]+":"+str(key[1])
+
+
+
+
+
 
 
 
